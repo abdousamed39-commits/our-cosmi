@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Cosmi WORLD - Vidéo Auto</title>
+<style>
+:root{--bg:#FAF8F5;--ink:#141414;--gold:#B89B5E;--line:#EDE8E0}
+*{margin:0;box-sizing:border-box}body{background:var(--bg);font-family:Arial}
+header{position:sticky;top:0;z-index:100;background:var(--ink);color:#fff;padding:14px 16px;display:flex;gap:10px;align-items:center}
+.logo{font-weight:900;font-size:18px}.logo b{color:var(--gold)}
+header input,header select{background:#1E1E1E;border:1px solid #333;color:#fff;border-radius:30px;padding:10px 14px;font-size:12px;flex:1}
+.video-banner{position:relative;width:100%;height:280px;overflow:hidden;background:#000}
+.video-banner .slide{position:absolute;inset:0;opacity:0;animation:slideShow 12s infinite;background-size:cover;background-position:center;display:flex;align-items:flex-end;padding:20px}
+.video-banner .slide:nth-child(1){animation-delay:0s;background-image:url('banner-rouge.jpg')}
+.video-banner .slide:nth-child(2){animation-delay:3s;background-image:url('banner-makeup.jpg')}
+.video-banner .slide:nth-child(3){animation-delay:6s;background-image:url('creme.jpg')}
+.video-banner .slide:nth-child(4){animation-delay:9s;background-image:url('rouge.jpg')}
+@keyframes slideShow{0%{opacity:0}5%{opacity:1}25%{opacity:1}30%{opacity:0}100%{opacity:0}}
+.slide-text{background:rgba(0,0,0,.6);color:#fff;padding:10px 14px;border-radius:12px;backdrop-filter:blur(4px)}
+.slide-text h2{font-size:16px;color:var(--gold)}.slide-text p{font-size:10px;margin-top:2px}
+.section{margin:14px 12px;background:#fff;border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+.section-head{padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.section-head h2{font-size:13px;font-weight:800}
+.products{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 10px 14px}
+.card{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.card img{width:100%;height:140px;object-fit:cover}.card-body{padding:8px 10px}.title{font-size:11px;font-weight:600;height:28px;overflow:hidden}.price{font-weight:800;font-size:11px;margin-top:4px}
+.wa{margin-top:6px;background:var(--ink);color:var(--gold);border:none;padding:5px 10px;border-radius:20px;font-size:9px;width:100%}
+.filters{display:flex;gap:8px;overflow-x:auto;padding:10px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:56px;z-index:50}
+.fbtn{white-space:nowrap;border-radius:30px;padding:7px 14px;border:1px solid var(--line);background:#fff;font-size:11px}.fbtn.active{background:var(--ink);color:var(--gold)}
+.fab{position:fixed;bottom:20px;right:20px;background:var(--ink);color:var(--gold);width:56px;height:56px;border-radius:50%;border:1px solid var(--gold);font-size:28px;z-index:90}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:200;padding:14px}.modal.active{display:flex}
+.box{background:#FAF8F5;width:100%;max-width:400px;border-radius:20px;padding:18px;max-height:90vh;overflow:auto}
+.box input,.box select{width:100%;margin:5px 0;padding:11px;border-radius:12px;border:1px solid var(--line)}
+.box button[type=submit]{width:100%;background:var(--ink);color:var(--gold);border:none;padding:13px;border-radius:12px;font-weight:700;margin-top:8px}
+</style>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const firebaseConfig = {apiKey:"AIzaSyAJQMIVjOA8TrQw9RDvWr_tuKbzVtaSS0I",authDomain:"our-cosmi-world.firebaseapp.com",projectId:"our-cosmi-world",storageBucket:"our-cosmi-world.firebasestorage.app",messagingSenderId:"363231617261",appId:"1:363231617261:web:53a5cb6ef59b98a0a8ece4"};
+const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+window.db=db; window.collection=collection; window.addDoc=addDoc; window.onSnapshot=onSnapshot; window.query=query; window.orderBy=orderBy; window.serverTimestamp=serverTimestamp;
+</script>
+</head>
+<body>
+<header><div class="logo">OUR <b>COSMI</b> WORLD</div><input id="search" placeholder="Chercher..."><select id="countryFilter"></select></header>
+
+<!-- VIDÉO AUTO GÉNÉRÉE - DÉFILE TOUTE SEULE COMME UNE PUB -->
+<div class="video-banner">
+  <div class="slide"><div class="slide-text"><h2>ROUGE À LÈVRES LUXE</h2><p>Le look de la photo → produits en dessous</p></div></div>
+  <div class="slide"><div class="slide-text"><h2>MAQUILLAGE NUDE</h2><p>Palette naturelle pro</p></div></div>
+  <div class="slide"><div class="slide-text"><h2>VERA COSMIQUE CRÈMES</h2><p>Face • Body • Hand - 24h Hydratation</p></div></div>
+  <div class="slide"><div class="slide-text"><h2>5 ROUGES BEST-SELLER</h2><p>Pack luxe gold</p></div></div>
+</div>
+
+<div class="filters"><button class="fbtn active" data-cat="all">Tout</button><button class="fbtn" data-cat="Rouge">Rouges</button><button class="fbtn" data-cat="Maquillage">Makeup</button><button class="fbtn" data-cat="Crème">Crèmes</button><button class="fbtn" data-cat="Parfum">Parfums</button></div>
+<div id="container"></div>
+<button class="fab" id="fab">+</button>
+<div class="modal" id="modal"><div class="box"><h3 style="font-weight:900;margin-bottom:10px">Publier</h3><form id="form"><input id="pName" placeholder="Nom produit *" required><input id="pPrice" type="number" placeholder="Prix *" required><select id="pCurrency"><option>MRU</option><option>EUR €</option><option>USD $</option><option>AED</option></select><select id="pCat" required><option>Rouge</option><option>Maquillage</option><option>Crème</option><option>Parfum</option><option>Naturel</option></select><select id="pCountry" required></select><input id="pVendor" placeholder="Boutique *" required><input id="pWa" placeholder="WhatsApp +222... *" required><input id="pImg" placeholder="Lien photo (vide=auto)"><button type="submit" id="submitBtn">🚀 PUBLIER</button><button type="button" id="close" style="width:100%;background:transparent;border:1px solid #EDE8E0;padding:10px;border-radius:12px;margin-top:8px">Annuler</button></form></div></div>
+<script type="module">
+const WORLD=[{name:"Mauritanie",flag:"🇲🇷"},{name:"Sénégal",flag:"🇸🇳"},{name:"Maroc",flag:"🇲🇦"},{name:"France",flag:"🇫🇷"},{name:"Dubaï",flag:"🇦🇪"},{name:"USA",flag:"🇺🇸"}];
+
+// STRUCTURE : CHAQUE SLIDE VIDÉO = SES PRODUITS EN DESSOUS (comme tu voulais)
+const SECTIONS=[
+ {id:"rouge",title:"💄 ROUGE À LÈVRES",sub:"Femme qui utilise rouge → rouges en dessous",cat:"Rouge"},
+ {id:"makeup",title:"🎨 MAQUILLAGE",sub:"Femme palette → makeup en dessous",cat:"Maquillage"},
+ {id:"creme",title:"🧴 CRÈMES VERA COSMIQUE",sub:"Crèmes Face/Body/Hand",cat:"Crème"},
+ {id:"parfum",title:"✨ PARFUMS",sub:"Best sellers",cat:"Parfum"}
+];
+
+const defaults=[
+ // ROUGE - sous photo femme rouge
+ {name:"Rouge Velvet Mat Intense",price:"120 MRU",cat:"Rouge",country:"Mauritanie",flag:"🇲🇷",vendor:"VERA COSMIQUE",wa:"22241176023",img:"rouge.jpg"},
+ {name:"Rouge Bordeaux Luxe",price:"120 MRU",cat:"Rouge",country:"Mauritanie",flag:"🇲🇷",vendor:"VERA COSMIQUE",wa:"22241176023",img:"rouge.jpg"},
+ {name:"Rouge Nude Naturel",price:"90 MRU",cat:"Rouge",country:"France",flag:"🇫🇷",vendor:"Belle Paris",wa:"33612345678",img:"rouge.jpg"},
+ {name:"Pack 5 Rouges Gold",price:"450 MRU",cat:"Rouge",country:"Dubaï",flag:"🇦🇪",vendor:"Zahra Dubai",wa:"971501234567",img:"rouge.jpg"},
+ // MAKEUP - sous photo femme maquillage
+ {name:"Palette Nude 12 couleurs",price:"2500 MRU",cat:"Maquillage",country:"France",flag:"🇫🇷",vendor:"Belle Paris",wa:"33612345678",img:"banner-makeup.jpg"},
+ {name:"Pinceaux Pro 3pcs",price:"1800 MRU",cat:"Maquillage",country:"France",flag:"🇫🇷",vendor:"Belle Paris",wa:"33612345678",img:"banner-makeup.jpg"},
+ {name:"Fond de Teint HD VERA",price:"1600 MRU",cat:"Maquillage",country:"Mauritanie",flag:"🇲🇷",vendor:"VERA COSMIQUE",wa:"22246123456",img:"banner-makeup.jpg"},
+ // CREME - sous photo crèmes
+ {name:"VERA Face Cream 50ml",price:"150 MRU",cat:"Crème",country:"Mauritanie",flag:"🇲🇷",vendor:"VERA COSMIQUE",wa:"22241176023",img:"creme.jpg"},
+ {name:"VERA Body Cream 200ml",price:"280 MRU",cat:"Crème",country:"Mauritanie",flag:"🇲🇷",vendor:"VERA COSMIQUE",wa:"22241176023",img:"creme.jpg"},
+ {name:"VERA Hand Cream",price:"90 MRU",cat:"Crème",country:"Mauritanie",flag:"🇲🇷",vendor:"VERA COSMIQUE",wa:"22241176023",img:"creme.jpg"},
+ {name:"VERA Serum Hydrating",price:"210 MRU",cat:"Naturel",country:"Mauritanie",flag:"🇲🇷",vendor:"VERA COSMIQUE",wa:"22241176023",img:"creme.jpg"},
+ // PARFUM
+ {name:"Oud Dubaï Gold",price:"120 AED",cat:"Parfum",country:"Dubaï",flag:"🇦🇪",vendor:"Zahra Dubai",wa:"971501234567",img:"parfum.jpg"},
+ {name:"Musc Blanc",price:"150 AED",cat:"Parfum",country:"Dubaï",flag:"🇦🇪",vendor:"Noor Dubai",wa:"971501111222",img:"parfum.jpg"},
+];
+
+const cf=document.getElementById("countryFilter"),pC=document.getElementById("pCountry"),container=document.getElementById("container");
+function fill(){const o='<option value="all">🌍 Tous pays</option>'+WORLD.map(w=>`<option value="${w.name}">${w.flag} ${w.name}</option>`).join('');cf.innerHTML=o;if(pC) pC.innerHTML=WORLD.map(w=>`<option value="${w.name}">${w.flag} ${w.name}</option>`).join('');}
+let activeCat="all"; let fb=[]; const productsCol=collection(db,"products"); const q=query(productsCol,orderBy("createdAt","desc"));
+onSnapshot(q,(snap)=>{fb=[];snap.forEach(d=>{let x=d.data();fb.push({name:x.name,price:(x.price||0)+" "+(x.currency||"MRU"),cat:x.category,country:x.country,flag:WORLD.find(w=>w.name==x.country)?.flag||"🌍",vendor:x.desc||"Boutique",wa:x.whatsapp,img:x.image||"creme.jpg"})});render();},()=>{render();});
+function getAll(){return fb.length?[...fb,...defaults]:defaults;}
+function render(){
+ container.innerHTML=""; const term=document.getElementById("search").value.toLowerCase(),cval=cf.value;
+ const all=getAll().filter(i=>{const mSearch=i.name.toLowerCase().includes(term);const mCountry=cval==="all"||i.country===cval;return mSearch&&mCountry;});
+ SECTIONS.forEach(sec=>{
+   if(activeCat!=="all" && activeCat!==sec.cat && !(sec.cat==="Crème" && activeCat==="Naturel")) return;
+   const list = all.filter(p=> sec.cat==="Crème" ? (p.cat==="Crème"||p.cat==="Naturel") : p.cat===sec.cat);
+   if(list.length===0) return;
+   const div=document.createElement("div");div.className="section";
+   div.innerHTML=`<div class="section-head"><h2>${sec.title}</h2><span style="font-size:9px;color:#B89B5E;font-weight:700">${sec.sub}</span></div><div class="products">${list.map(p=>`<div class="card"><img src="${p.img}" onerror="this.src='creme.jpg'"><div class="card-body"><div style="font-size:8px;color:#B89B5E;font-weight:700">${p.flag} ${p.cat}</div><div class="title">${p.name}</div><div style="font-size:9px;color:#999">${p.vendor}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px"><div class="price">${p.price}</div><button class="wa" onclick="window.open('https://wa.me/${p.wa}','_blank')">WhatsApp</button></div></div></div>`).join('')}</div>`;
+   container.appendChild(div);
+ });
+}
+fill();
+document.querySelectorAll(".fbtn").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".fbtn").forEach(x=>x.classList.remove("active"));b.classList.add("active");activeCat=b.dataset.cat;render();}));
+cf.addEventListener("change",render);document.getElementById("search").addEventListener("input",render);
+document.getElementById("fab").onclick=()=>document.getElementById("modal").classList.add("active");document.getElementById("close").onclick=()=>document.getElementById("modal").classList.remove("active");
+document.getElementById("form").addEventListener("submit",async(e)=>{e.preventDefault();const btn=document.getElementById("submitBtn");btn.disabled=true;btn.textContent="Publication...";try{await addDoc(productsCol,{name:document.getElementById("pName").value,price:Number(document.getElementById("pPrice").value),currency:document.getElementById("pCurrency").value,country:pC.value,category:document.getElementById("pCat").value,image:document.getElementById("pImg").value,whatsapp:document.getElementById("pWa").value,desc:document.getElementById("pVendor").value,createdAt:serverTimestamp()});alert("✅ Publié !");e.target.reset();document.getElementById("modal").classList.remove("active");}catch(err){alert(err.message);}btn.disabled=false;btn.textContent="🚀 PUBLIER";});
+render();
+</script></body></html>
