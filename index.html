@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Cosmi - Beauté Mauritanie | 41176023</title>
+<style>
+:root{--orange:#FF6A00;--black:#111;--gray:#f5f5f5}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui}
+body{background:var(--gray)}
+.top{background:var(--black);color:#fff;padding:6px 12px;font-size:11px;display:flex;justify-content:space-between}
+header{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #eee;display:flex;gap:10px;padding:10px 12px;align-items:center;flex-wrap:wrap}
+.logo{font-weight:900;font-size:22px} .logo b{color:var(--orange)}
+.search{flex:1;display:flex;max-width:600px;border:2.5px solid var(--orange);border-radius:28px;overflow:hidden}
+.search input{flex:1;border:none;padding:13px 16px;outline:none;font-size:14px}
+.search button{background:var(--orange);border:none;color:#fff;padding:0 20px;font-weight:900;font-size:16px}
+.selects{display:flex;gap:6px} .selects select{padding:9px 12px;border-radius:22px;border:1px solid #ddd;font-size:12px;background:#fff}
+.cats{display:flex;gap:8px;padding:12px;overflow-x:auto;background:#fff;border-bottom:1px solid #eee;position:sticky;top:60px;z-index:90}
+.cats button{white-space:nowrap;padding:10px 18px;border-radius:24px;border:1px solid #ddd;background:#fff;font-weight:700;font-size:13px}
+.cats button.active{background:var(--black);color:#fff;border-color:var(--black)}
+.hero{height:160px;background-size:cover;background-position:center;display:flex;align-items:end;padding:14px;color:#fff;position:relative}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.7),transparent)}
+.hero div{position:relative;z-index:2}
+.hero h1{font-size:20px;font-weight:900} .hero p{font-size:12px;opacity:.9}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;padding:12px}
+.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);position:relative;transition:.2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+.card img{width:100%;height:180px;object-fit:cover;background:#fff}
+.badge{position:absolute;top:8px;left:8px;background:var(--orange);color:#fff;font-size:9px;font-weight:900;padding:5px 9px;border-radius:8px;z-index:3}
+.sold{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.75);color:#fff;font-size:9px;padding:5px 7px;border-radius:8px;z-index:3}
+.info{padding:10px} .country{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px}
+.name{font-size:13px;font-weight:700;line-height:1.3;height:38px;overflow:hidden;margin:4px 0}
+.desc{font-size:11px;color:#666;height:28px;overflow:hidden;margin-bottom:4px}
+.stars{font-size:11px;color:#FFA500} .priceRow{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.price{font-weight:900;font-size:15px} .wa{background:#25D366;color:#fff;border:none;padding:7px 12px;border-radius:20px;font-size:11px;font-weight:900}
+.fab{position:fixed;bottom:20px;right:20px;background:var(--orange);color:#fff;width:60px;height:60px;border-radius:50%;border:none;font-size:30px;box-shadow:0 8px 24px rgba(255,106,0,.4);z-index:99}
+.panel{display:none;padding:12px} .panel.active{display:block}
+.form{max-width:520px;margin:0 auto;background:#fff;padding:18px;border-radius:18px;box-shadow:0 6px 24px rgba(0,0,0,.08)}
+.form input,.form select,.form textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #ddd;margin:6px 0;font-size:13px}
+.btnMain{width:100%;background:var(--orange);color:#fff;border:none;padding:15px;border-radius:12px;font-weight:900;font-size:14px;margin-top:8px}
+.empty{grid-column:1/-1;text-align:center;padding:50px 20px;background:#fff;border-radius:14px;color:#888}
+</style>
+</head>
+<body>
+<div class="top"><span>🇲🇷 Nouakchott • Livraison 24h • 📞 41176023</span><span id="count"></span></div>
+<header><div class="logo">Our <b>Cosmi</b></div><div class="search"><input id="q" placeholder="Chercher perruque, crème, parfum..."><button id="btnQ">🔍</button></div><div class="selects"><select id="countrySel"></select><select id="contSel"><option value="all">Tous continents</option><option>Afrique</option><option>Europe</option><option>Asie</option></select></div></header>
+<div class="cats" id="cats"><button class="active" data-c="all">Tous</button><button data-c="Perruque">Perruques</button><button data-c="Sérum">Sérum Cheveux</button><button data-c="Crème">Crèmes</button><button data-c="Maquillage">Maquillage</button><button data-c="Rose">Rouge à Lèvres</button><button data-c="Parfum">Parfums</button></div>
+<div class="hero" id="hero"><div><h1>Our Cosmi - Beauté Pro</h1><p>Produits authentiques • Paiement à la livraison • 41176023</p></div></div>
+<div id="buyView"><div class="grid" id="grid"></div></div>
+<div id="sellView" class="panel"><div class="form"><h3 style="text-align:center">Publier Produit - Ton numéro sera affiché</h3>
+<input id="pName" placeholder="Nom exact : ex Perruque Brésilienne 22 pouces">
+<textarea id="pDesc" placeholder="Signification / description : ex Cheveux 100% humains, pousse, hydratation..."></textarea>
+<div style="display:flex;gap:8px"><input id="pPrice" type="number" placeholder="Prix"><select id="pCur" style="width:120px"><option>MRU</option><option>XOF</option><option>EUR €</option><option>USD $</option></select></div>
+<select id="pCat"><option>Perruque</option><option>Sérum</option><option>Crème</option><option>Maquillage</option><option>Rose</option><option>Parfum</option></select>
+<select id="pCountry"></select>
+<input id="pVendor" placeholder="Nom de ta boutique">
+<input id="pWa" placeholder="TON WhatsApp (ex: 41176023) - OBLIGATOIRE - clients te contactent direct" required>
+<input id="pImg" placeholder="Photo déjà uploadée : ex perruque.jpg (laisse vide pour auto)">
+<label style="display:flex;gap:8px;align-items:center;background:#fff7ed;padding:12px;border-radius:12px;margin:10px 0;font-size:12px"><input type="checkbox" id="pPub" style="width:18px"><b>Mettre en Sponsorisé 🔥 (en haut)</b></label>
+<button id="publish" class="btnMain">Publier avec MON numéro →</button>
+</div></div>
+<button class="fab" id="fab">+</button>
+<script>
+const WORLD=[{name:"Mauritanie",flag:"🇲🇷",cont:"Afrique"},{name:"Sénégal",flag:"🇸🇳",cont:"Afrique"},{name:"Mali",flag:"🇲🇱",cont:"Afrique"},{name:"Maroc",flag:"🇲🇦",cont:"Afrique"},{name:"France",flag:"🇫🇷",cont:"Europe"},{name:"USA",flag:"🇺🇸",cont:"Amérique"},{name:"Dubaï",flag:"🇦🇪",cont:"Asie"},{name:"Turquie",flag:"🇹🇷",cont:"Asie"}];
+const KEY="our_cosmi_V5_41176023_FINAL_PRO";
+const BANNERS={"Perruque":"banner-rouge.jpg","Crème":"banner-creme.jpg","Parfum":"banner-parfum.jpg","all":"banner-parfum.jpg"};
+// PRODUITS AVEC TES VRAIES IMAGES LOCALES + SIGNIFICATION
+const PRODUCTS=[
+{name:"Perruque Brésilienne Lace Frontal 22\" Wavy - 100% Humains",price:"5200 MRU",cat:"Perruque",country:"Mauritanie",flag:"🇲🇷",vendor:"Our Cosmi Officiel",wa:"22241176023",img:"perruque.jpg",desc:"Cheveux brésiliens 100% naturels, 22 pouces, lace invisible, densité luxe. Change de style sans abîmer tes cheveux. Dure 2-3 ans.",isPub:true,sold:128,stars:4.9,views:412},
+{name:"Sérum Vera Cosmique Aloe Vera - Pousse Rapide",price:"1500 MRU",cat:"Sérum",country:"Mauritanie",flag:"🇲🇷",vendor:"Vera Cosmique - 41176023",wa:"22241176023",img:"serum.jpg",desc:"Sérum 100% Aloe Vera. Fait pousser, anti-chute, répare pointes. Pour cheveux crépus, abîmés après perruque. 100ml/250ml/500ml.",isPub:true,sold:203,stars:5.0,views:512},
+{name:"Crème Hydratante Face/Body/Hand - Teint Diamant",price:"1200 MRU",cat:"Crème",country:"Mauritanie",flag:"🇲🇷",vendor:"Our Cosmi Lab - 41176023",wa:"22241176023",img:"creme.jpg",desc:"Gamme complète : visage hydratant 50ml, corps nourrissant 200ml, mains réparateur. Anti-taches, teint uniforme, peau douce.",isPub:true,sold:89,stars:4.8,views:298},
+{name:"Parfum Oud Royal Dubaï - Collection Luxe Arabe",price:"3500 MRU",cat:"Parfum",country:"Dubaï",flag:"🇦🇪",vendor:"Zahra Dubai",wa:"971501234567",img:"parfum.jpg",desc:"Parfum Oud fort et durable. Bouteille diamant or. Pour soirée, mariage. Sent fort 24h. Original Dubaï.",isPub:true,sold:156,stars:4.9,views:387},
+{name:"Rouge à Lèvres Velvet Mat - Rouge & Nude",price:"800 MRU",cat:"Rose",country:"Mauritanie",flag:"🇲🇷",vendor:"Our Cosmi Beauty - 41176023",wa:"22241176023",img:"banner-rouge.jpg",desc:"Rouge velvet longue tenue. Ne dessèche pas. Couleurs : rouge passion, nude chic. Effet luxe, pour femme élégante.",isPub:false,sold:76,stars:4.7,views:124},
+{name:"Kit Maquillage Complet Pro - Fondation + Palette",price:"2500 MRU",cat:"Maquillage",country:"Mauritanie",flag:"🇲🇷",vendor:"Our Cosmi Makeup - 41176023",wa:"22241176023",img:"maquillage.jpg",desc:"Kit tout-en-un : fond de teint Natural Finish, concealer, palette 10 fards nude, blush, mascara volume, pinceaux dorés.",isPub:false,sold:64,stars:4.6,views:98},
+{name:"Crème Solaire Visage SPF50 - Anti Soleil NKC",price:"1000 MRU",cat:"Crème",country:"Mauritanie",flag:"🇲🇷",vendor:"Our Cosmi Lab - 41176023",wa:"22241176023",img:"creme solaire.jpg",desc:"Protection solaire 100% Mauritanie. Anti-taches, ne blanchit pas. Pour soleil fort Nouakchott.",isPub:false,sold:92,stars:4.8,views:176},
+{name:"Vera Cosmique Aloe Vera Pur - Cheveux & Corps",price:"1800 MRU",cat:"Sérum",country:"Mauritanie",flag:"🇲🇷",vendor:"Vera Cosmique - 41176023",wa:"22241176023",img:"vera.jpg",desc:"Aloe Vera pur 100% naturel. Hydrate cheveux et corps. Produit phare Vera Cosmique.",isPub:false,sold:112,stars:4.9,views:234}
+];
+let items;
+try{let s=localStorage.getItem(KEY); items=s?JSON.parse(s):null; if(!items||items.length<3) throw "empty";}catch(e){items=[...PRODUCTS]; localStorage.setItem(KEY,JSON.stringify(items));}
+const cf=document.getElementById("countrySel"), pc=document.getElementById("pCountry"), hero=document.getElementById("hero");
+function fillSel(){cf.innerHTML='<option value="all">🌍 Tous pays</option>'+WORLD.map(w=>`<option value="${w.name}">${w.flag} ${w.name}</option>`).join(''); pc.innerHTML=WORLD.map(w=>`<option value="${w.name}">${w.flag} ${w.name}</option>`).join('');}
+let activeCat="all";
+function render(){
+ let list=[...items];
+ if(activeCat!=="all") list=list.filter(i=>i.cat===activeCat);
+ let term=document.getElementById("q").value.toLowerCase().trim();
+ if(term){
+  list=list.filter(i=>{
+   let n=i.name.toLowerCase()+" "+i.desc.toLowerCase()+" "+i.cat.toLowerCase();
+   if(term.includes("perruq")||term.includes("wig")) return i.cat==="Perruque";
+   if(term.includes("serum")||term.includes("vera")||term.includes("cheveu")) return i.cat==="Sérum";
+   if(term.includes("creme")||term.includes("crème")||term.includes("visage")||term.includes("corps")) return i.cat==="Crème";
+   if(term.includes("maquill")||term.includes("makeup")||term.includes("fond")) return i.cat==="Maquillage";
+   if(term.includes("rose")||term.includes("rouge")||term.includes("levre")) return i.cat==="Rose";
+   if(term.includes("parfum")||term.includes("oud")||term.includes("rose parfum")||term.includes("jasmin")) return i.cat==="Parfum";
+   return n.includes(term);
+  });
+ }
+ let cval=cf.value; if(cval!=="all") list=list.filter(i=>i.country===cval);
+ let cont=document.getElementById("contSel").value; if(cont!=="all"){list=list.filter(i=>{let w=WORLD.find(x=>x.name===i.country); return w&&w.cont===cont;});}
+ list.sort((a,b)=>{if(a.isPub&&!b.isPub) return -1; if(!a.isPub&&b.isPub) return 1; return b.sold-a.sold;});
+ let grid=document.getElementById("grid"); grid.innerHTML="";
+ hero.style.backgroundImage=`url('${BANNERS[activeCat]||BANNERS.all}')`;
+ if(list.length===0){grid.innerHTML=`<div class="empty"><h3>Aucun résultat pour "${term||activeCat}"</h3><p>Essaie : Perruque, Sérum, Crème, Parfum, Maquillage</p></div>`; return;}
+ list.forEach(p=>{
+  let idx=items.indexOf(p);
+  let div=document.createElement("div"); div.className="card";
+  let displayNum=p.wa.replace("222",""); // affiche 41176023
+  div.innerHTML=`${p.isPub?'<div class="badge">SPONSORISÉ</div>':''}<div class="sold">🔥 ${p.sold} vendus</div><img src="${p.img}" onerror="this.src='vera.jpg'"><div class="info"><div class="country">${p.flag} ${p.country} • ${p.cat}</div><div class="name">${p.name}</div><div class="desc">${p.desc}</div><div class="stars">★ ${p.stars} <span style="color:#666">• ${displayNum}</span></div><div class="priceRow"><div class="price">${p.price}</div><button class="wa" onclick="openWa(${idx})">WhatsApp</button></div></div>`;
+  grid.appendChild(div);
+ });
+ document.getElementById("count").innerText=items.length+" produits";
+ localStorage.setItem(KEY,JSON.stringify(items));
+}
+window.openWa=(i)=>{
+ let p=items[i];
+ let cleanWa=p.wa.replace(/\D/g,''); if(cleanWa.length===8) cleanWa="222"+cleanWa;
+ let txt=`Salam ${p.vendor} ! Je veux : ${p.name} - ${p.price}\nSignification : ${p.desc}\nVu sur Our Cosmi`;
+ window.open(`https://wa.me/${cleanWa}?text=${encodeURIComponent(txt)}`,'_blank');
+ p.views++; render();
+};
+fillSel();
+document.querySelectorAll("#cats button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("#cats button").forEach(x=>x.classList.remove("active")); b.classList.add("active"); activeCat=b.dataset.c; render();}));
+cf.addEventListener("change",render); document.getElementById("contSel").addEventListener("change",render);
+document.getElementById("q").addEventListener("input",render); document.getElementById("btnQ").addEventListener("click",render);
+document.getElementById("publish").addEventListener("click",()=>{
+ let name=document.getElementById("pName").value; if(!name) return alert("Nom");
+ let price=document.getElementById("pPrice").value; if(!price) return alert("Prix");
+ let waIn=document.getElementById("pWa").value.trim(); if(!waIn) return alert("Mets TON WhatsApp - obligatoire");
+ let finalWa=waIn.replace(/\D/g,''); if(finalWa.length===8) finalWa="222"+finalWa;
+ let np={name:name,price:price+" "+document.getElementById("pCur").value,cat:document.getElementById("pCat").value,country:pc.value,flag:WORLD.find(w=>w.name===pc.value)?.flag||"🇲🇷",vendor:document.getElementById("pVendor").value||"Vendeuse Our Cosmi",wa:finalWa,img:document.getElementById("pImg").value|| (document.getElementById("pCat").value==="Perruque"?"perruque.jpg":document.getElementById("pCat").value==="Parfum"?"parfum.jpg":document.getElementById("pCat").value==="Crème"?"creme.jpg":document.getElementById("pCat").value==="Sérum"?"serum.jpg":document.getElementById("pCat").value==="Maquillage"?"maquillage.jpg":"banner-rouge.jpg"),desc:document.getElementById("pDesc").value||"Produit authentique Our Cosmi",isPub:document.getElementById("pPub").checked,sold:0,stars:4.8,views:15};
+ items.unshift(np); render(); alert('✅ Publié avec TON numéro: '+waIn+' ! Clients te contactent direct sur '+waIn); document.getElementById("sellView").classList.remove("active"); document.getElementById("buyView").style.display="block"; document.getElementById("sellView").style.display="none";
+});
+document.getElementById("fab").onclick=()=>{document.getElementById("buyView").style.display="none"; document.getElementById("sellView").style.display="block"; document.getElementById("sellView").classList.add("active");};
+render();
+</script>
+</body>
+  </html>
