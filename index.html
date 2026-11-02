@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Cosmi V3.1 FIX</title>
+<style>
+:root{--orange:#FF6A00;--bg:#f5f5f5}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:var(--bg)}
+.topbar{background:var(--orange);color:#fff;padding:8px 12px;display:flex;justify-content:space-between;font-size:12px;font-weight:700}
+.header{position:sticky;top:0;background:#fff;display:flex;gap:8px;padding:10px;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.08);z-index:100;flex-wrap:wrap}
+.logo{font-weight:900;font-size:22px;color:var(--orange)} .logo span{color:#000}
+.search{flex:1;min-width:140px;padding:10px 14px;border-radius:22px;border:2px solid var(--orange)}
+select{padding:8px;border-radius:20px;border:1px solid #ddd;font-size:12px}
+.role-tabs{display:flex;gap:6px;padding:10px;background:#fff;overflow-x:auto}
+.role{padding:8px 16px;border-radius:20px;border:1px solid var(--orange);background:#fff;color:var(--orange);font-weight:800;font-size:12px;white-space:nowrap}
+.role.active{background:var(--orange);color:#fff}
+.hero{background:linear-gradient(135deg,#FF6A00,#ff2e78);color:#fff;text-align:center;padding:16px}
+.filters{display:flex;gap:6px;overflow-x:auto;padding:10px;background:#fff}
+.fbtn{padding:6px 14px;border-radius:20px;border:1px solid #FF6A00;background:#fff;color:#FF6A00;font-size:12px}
+.fbtn.active{background:#FF6A00;color:#fff}
+.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;padding:12px}
+.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #ffe0cc;position:relative}
+.card.pub{border:2px solid var(--orange);background:#fffaf5}
+.card img{width:100%;height:165px;object-fit:cover}
+.badge-pub{position:absolute;top:8px;left:8px;background:var(--orange);color:#fff;padding:3px 8px;border-radius:12px;font-size:9px;font-weight:900}
+.badge-views{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.7);color:#fff;padding:3px 6px;border-radius:10px;font-size:9px}
+.card-body{padding:8px}
+.price{color:var(--orange);font-weight:900}
+.btn{border:none;padding:6px 10px;border-radius:10px;color:#fff;font-weight:700;font-size:11px;margin:2px}
+.wa{background:#25D366} .fb{background:#1877F2} .copy{background:#333}
+.fab{position:fixed;bottom:16px;right:16px;background:var(--orange);color:#fff;width:60px;height:60px;border-radius:50%;border:none;font-size:28px;z-index:99}
+.box{background:#fff;width:100%;max-width:430px;border-radius:16px;padding:16px;margin:10px auto}
+.box input,.box select{width:100%;margin:6px 0;padding:10px;border-radius:10px;border:1px solid #ddd}
+.btn-pub{background:var(--orange);color:#fff;padding:12px;border:none;border-radius:10px;width:100%;font-weight:800}
+.pub-check{background:#fff3e0;border:1px solid var(--orange);padding:10px;border-radius:10px;display:flex;gap:8px;margin:8px 0}
+</style>
+</head>
+<body>
+<div class="topbar"><span>🌍 Our Cosmi V3.1 FIX - 195 Pays</span><span id="pubCount">...</span></div>
+<header><div class="logo">Our Cosmi<span>.com</span></div><input id="search" class="search" placeholder="Perruque, crème..."><select id="countryFilter"></select><select id="contFilter"><option value="all">🌍 Monde</option><option>Afrique</option><option>Europe</option><option>Asie</option><option>Amérique</option></select></header>
+<div class="role-tabs">
+<button class="role active" data-role="buyer">🛒 Acheteur</button>
+<button class="role" data-role="seller">🏪 Vendeur PUB</button>
+<button class="role" data-role="livreur">🚚 Livreur</button>
+</div>
+<div class="hero"><h1>🔥 Produits PUB en haut comme Alibaba</h1><p>V3.1 FIX - bug vide corrigé</p></div>
+<div class="filters"><button class="fbtn active" data-cat="all">Tout</button><button class="fbtn" data-cat="Perruque">Perruques</button><button class="fbtn" data-cat="Crème">Crèmes</button><button class="fbtn" data-cat="Parfum">Parfums</button><button class="fbtn" data-cat="pub">🔥 PUB seulement</button></div>
+
+<div id="buyerView"><div class="products" id="grid"></div></div>
+
+<div id="sellerView" style="display:none;padding:12px">
+<div class="box"><h3>🏪 Vendeur PUB</h3>
+<form id="form">
+<input id="pName" placeholder="Nom produit" required>
+<div style="display:flex;gap:6px"><input id="pPrice" type="number" placeholder="Prix" required style="flex:1"><select id="pCurrency"><option>MRU</option><option>XOF</option><option>EUR €</option><option>USD $</option><option>AED</option></select></div>
+<select id="pCat"><option>Perruque</option><option>Crème</option><option>Parfum</option><option>Maquillage</option></select>
+<select id="pCountry"></select>
+<input id="pVendor" placeholder="Nom boutique" required>
+<input id="pWa" placeholder="WhatsApp +222..." required>
+<input type="file" id="pFile" accept="image/*" style="display:none">
+<button type="button" onclick="document.getElementById('pFile').click()" style="width:100%;padding:8px;border-radius:8px;border:1px solid #2196f3;background:#e3f2fd;margin:6px 0">📸 Photo téléphone (AUTO)</button>
+<input id="pImg" placeholder="Lien photo (optionnel)">
+<div class="pub-check"><input type="checkbox" id="pIsPub" style="width:20px;height:20px"><label for="pIsPub" style="font-size:12px"><b style="color:#FF6A00">Mettre en PUB</b> - en haut + sponsorisé</label></div>
+<button type="submit" class="btn-pub">Publier 🚀</button>
+</form>
+<div id="myProducts" style="margin-top:12px"></div>
+</div>
+</div>
+
+<div id="livreurView" style="display:none;padding:12px">
+<h3>🚚 Livreur</h3>
+<div id="livList"></div>
+</div>
+
+<button class="fab" id="fab">+</button>
+
+<script>
+const WORLD=[{name:"Mauritanie",flag:"🇲🇷",cont:"Afrique"},{name:"Sénégal",flag:"🇸🇳",cont:"Afrique"},{name:"Maroc",flag:"🇲🇦",cont:"Afrique"},{name:"France",flag:"🇫🇷",cont:"Europe"},{name:"USA",flag:"🇺🇸",cont:"Amérique"},{name:"Dubaï",flag:"🇦🇪",cont:"Asie"},{name:"Chine",flag:"🇨🇳",cont:"Asie"}];
+const KEY="our_cosmi_v31_fix";
+const defaults=[
+{name:"Perruque Brésilienne 22\" PUB",price:"4500 MRU",cat:"Perruque",country:"Mauritanie",flag:"🇲🇷",vendor:"Fatou NKC",wa:"22246123456",img:"https://images.unsplash.com/photo-1590156546946-ce55a12a6a5d?w=400",isPub:true,views:342},
+{name:"Crème Teint Diamant",price:"45 EUR",cat:"Crème",country:"France",flag:"🇫🇷",vendor:"Aïcha Paris",wa:"33612345678",img:"https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400",isPub:false,views:89},
+{name:"Parfum Oud Dubaï PUB",price:"120 AED",cat:"Parfum",country:"Dubaï",flag:"🇦🇪",vendor:"Zahra Dubai",wa:"971501234567",img:"https://images.unsplash.com/photo-1541643600914-78b084683601?w=400",isPub:true,views:512},
+{name:"Perruque Lace HD Naturelle",price:"6000 MRU",cat:"Perruque",country:"Sénégal",flag:"🇸🇳",vendor:"Aminata Dakar",wa:"221771234567",img:"https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400",isPub:false,views:124}
+];
+let items;
+try{
+ let saved=localStorage.getItem(KEY);
+ items=saved?JSON.parse(saved):null;
+ if(!items || items.length===0) items=[...defaults];
+}catch(e){ items=[...defaults]; }
+let tempImg=null;
+const cf=document.getElementById("countryFilter"), pC=document.getElementById("pCountry");
+function fill(){const o='<option value="all">🌍 Tous pays</option>'+WORLD.map(w=>`<option value="${w.name}">${w.flag} ${w.name}</option>`).join(''); cf.innerHTML=o; pC.innerHTML='<option value="">Ton pays</option>'+WORLD.map(w=>`<option value="${w.name}">${w.flag} ${w.name}</option>`).join('');}
+let activeCat="all";
+const grid=document.getElementById("grid");
+function autoImage(n,c,custom){
+ if(tempImg) return tempImg;
+ if(custom && custom.startsWith('http')) return custom;
+ n=(n||"").toLowerCase(); c=(c||"").toLowerCase();
+ if(c.includes('perruque')||n.includes('perruque')||n.includes('wig')) return "https://images.unsplash.com/photo-1590156546946-ce55a12a6a5d?w=400";
+ if(c.includes('crème')||c.includes('creme')||n.includes('crème')) return "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400";
+ if(c.includes('parfum')||n.includes('parfum')||n.includes('oud')) return "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400";
+ return "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400";
+}
+function render(){
+ let list=[...items];
+ // Filtre cat
+ if(activeCat==="pub") list=list.filter(i=>i.isPub);
+ else if(activeCat!=="all") list=list.filter(i=>i.cat===activeCat);
+ // Search
+ let term=document.getElementById("search").value.toLowerCase();
+ if(term) list=list.filter(i=>i.name.toLowerCase().includes(term));
+ // Pays
+ let cval=cf.value; if(cval!=="all") list=list.filter(i=>i.country===cval);
+ let cont=document.getElementById("contFilter").value;
+ if(cont!=="all" && cont!=="🌍 Monde"){ list=list.filter(i=>{let w=WORLD.find(x=>x.name===i.country); return w&&w.cont===cont;});}
+ // Tri PUB d'abord
+ list.sort((a,b)=>{ if(a.isPub && !b.isPub) return -1; if(!a.isPub && b.isPub) return 1; return b.views-a.views; });
+ grid.innerHTML="";
+ if(list.length===0){ grid.innerHTML="<p style='padding:20px;text-align:center'>Aucun produit, publie en tant que vendeur</p>"; }
+ list.forEach((p,idx)=>{
+  let realIdx=items.indexOf(p);
+  let d=document.createElement("div"); d.className="card"+(p.isPub?" pub":"");
+  d.innerHTML=`${p.isPub?'<div class="badge-pub">🔥 PUB</div>':''}<div class="badge-views">👁️ ${p.views}</div><img src="${p.img}" onerror="this.src='https://via.placeholder.com/400?text=Our+Cosmi'"><div class="card-body"><div style="font-size:9px;color:#FF6A00;font-weight:800">${p.flag} ${p.cat} ${p.isPub?'• SPONSORISÉ':''}</div><div style="font-size:12px;font-weight:700;height:32px;overflow:hidden">${p.name}</div><div style="font-size:10px;color:#888">${p.vendor} - ${p.country}</div><div style="display:flex;justify-content:space-between;margin-top:6px;align-items:center"><div class="price">${p.price}</div><button class="btn wa" onclick="contactWa(${realIdx})">WhatsApp</button></div><div style="margin-top:4px"><button class="btn fb" onclick="shareFb(${realIdx})">FB</button> <button class="btn copy" onclick="copyText(${realIdx})">${p.isPub?'🔥 PUB':'Copy'}</button></div></div>`;
+  grid.appendChild(d);
+ });
+ localStorage.setItem(KEY,JSON.stringify(items));
+ document.getElementById("pubCount").innerText=items.filter(i=>i.isPub).length+" PUB actifs";
+ let my=document.getElementById("myProducts");
+ if(my) my.innerHTML=items.slice(0,6).map((p,i)=>`<div style="background:${p.isPub?'#fff3e0':'#fff'};border:1px solid ${p.isPub?'#FF6A00':'#eee'};padding:8px;margin:6px 0;border-radius:8px;display:flex;gap:8px"><img src="${p.img}" style="width:45px;height:45px;border-radius:8px;object-fit:cover"><div style="flex:1"><b style="font-size:11px">${p.isPub?'🔥':''} ${p.name}</b><br><small>${p.price} • ${p.views} vues</small></div><button onclick="togglePub(${items.indexOf(p)})" style="border:none;padding:5px 8px;border-radius:8px;background:${p.isPub?'#FF6A00':'#999'};color:#fff;font-size:10px">${p.isPub?'PUB ON':'PUB OFF'}</button></div>`).join('');
+}
+function getText(i){let p=items[i]; return `${p.isPub?'🔥 PUB SPONSORISÉ - ':''}${p.name} - ${p.price} ${p.flag} ${p.country}\n🏪 ${p.vendor}\n👁️ ${p.views} vues\n📲 https://wa.me/${p.wa}\n🌍 Our Cosmi.com`;}
+window.contactWa=(i)=>{let p=items[i]; window.open(`https://wa.me/${p.wa}?text=${encodeURIComponent(getText(i))}`,'_blank'); p.views++; render();};
+window.shareFb=(i)=>{ window.open(`https://www.facebook.com/sharer/sharer.php?u=https://abdousamed39-commits.github.io/our-cosmi/&quote=${encodeURIComponent(getText(i))}`,'_blank');};
+window.copyText=(i)=>{ navigator.clipboard.writeText(getText(i)); alert('Copié !'); items[i].views++; render();};
+window.togglePub=(i)=>{ items[i].isPub=!items[i].isPub; if(items[i].isPub) items[i].views+=100; render();};
+fill();
+document.querySelectorAll(".fbtn").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".fbtn").forEach(x=>x.classList.remove("active")); b.classList.add("active"); activeCat=b.dataset.cat; render();}));
+cf.addEventListener("change",render); document.getElementById("contFilter").addEventListener("change",render); document.getElementById("search").addEventListener("input",render);
+document.querySelectorAll(".role").forEach(r=>r.addEventListener("click",()=>{document.querySelectorAll(".role").forEach(x=>x.classList.remove("active")); r.classList.add("active"); let role=r.dataset.role; document.getElementById("buyerView").style.display=role==="buyer"?"block":"none"; document.getElementById("sellerView").style.display=role==="seller"?"block":"none"; document.getElementById("livreurView").style.display=role==="livreur"?"block":"none";}));
+document.getElementById("fab").onclick=()=>{document.querySelector('[data-role="seller"]').click(); window.scrollTo(0,0);};
+document.getElementById("pFile").addEventListener("change",e=>{let file=e.target.files[0]; if(!file) return; let reader=new FileReader(); reader.onload=ev=>{tempImg=ev.target.result; alert('✅ Photo prise !');}; reader.readAsDataURL(file);});
+document.getElementById("form").addEventListener("submit",e=>{
+ e.preventDefault();
+ let cName=pC.value||"Mauritanie"; let obj=WORLD.find(x=>x.name===cName)||{flag:"🇲🇷"};
+ let np={name:document.getElementById("pName").value, price:document.getElementById("pPrice").value+" "+document.getElementById("pCurrency").value, country:cName, flag:obj.flag, cat:document.getElementById("pCat").value, vendor:document.getElementById("pVendor").value, wa:document.getElementById("pWa").value.replace(/\s|\+/g,''), img:autoImage(document.getElementById("pName").value, document.getElementById("pCat").value, document.getElementById("pImg").value), isPub:document.getElementById("pIsPub").checked, views:document.getElementById("pIsPub").checked?320:20};
+ items.unshift(np); tempImg=null; e.target.reset(); render(); alert(np.isPub?'✅ Publié en PUB - il est en haut !':'✅ Publié !');
+});
+render();
+</script>
+</body>
+  </html>
