@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FITS MANAGER</title>
+<meta name="theme-color" content="#002366">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href='data:application/manifest+json,{"name":"FITS MANAGER","short_name":"FITS","display":"standalone","background_color":"%23002366","theme_color":"%23002366","start_url":".","icons":[{"src":"https://cdn-icons-png.flaticon.com/512/3135/3135715.png","sizes":"512x512","type":"image/png"}]}'>
+<style>
+:root{--primary:#002366;--secondary:#0088cc;--bg:#f4f6f9;--white:#fff;--danger:#b00020;--warning:#ff9800;--green:#4caf50}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);display:flex;min-height:100vh;padding-bottom:70px}
+.sidebar{width:260px;background:var(--primary);color:#fff;padding:20px;position:fixed;height:100vh;overflow-y:auto;z-index:100}
+.sidebar-brand{display:flex;gap:12px;align-items:center;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.15);margin-bottom:20px}
+.logo-circle{width:48px;height:48px;background:#fff;border-radius:12px;display:grid;place-items:center;font-size:24px}
+.sidebar-brand h2{font-size:14px}.sidebar-brand small{color:#a8c8e8;font-size:10px}
+.sidebar-menu{list-style:none}.sidebar-menu li{margin-bottom:6px}
+.sidebar-menu a{color:#cbd5e1;text-decoration:none;padding:12px 15px;display:block;border-radius:8px;font-size:13px}
+.sidebar-menu a.active{background:var(--secondary);color:#fff}
+.main-content{margin-left:260px;width:calc(100% - 260px);padding:20px}
+header{background:var(--white);padding:16px 20px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+header h1{font-size:1.15rem;color:var(--primary)}.header-left p{font-size:11px;color:#666}
+.app-section{display:none}.app-section.active{display:block}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-bottom:20px}
+.card{background:var(--white);padding:18px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.05);border-left:5px solid #ccc}
+.card h3{font-size:.72rem;color:#666;margin-bottom:8px}.card p{font-size:1.7rem;font-weight:bold}
+.card-blue{border-left-color:var(--secondary)}.card-red{border-left-color:var(--danger)}.card-orange{border-left-color:var(--warning)}.card-green{border-left-color:var(--green)}
+.card.clickable{cursor:pointer}
+.content-block{background:var(--white);padding:18px;border-radius:12px;margin-bottom:18px;overflow-x:auto}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group label{display:block;margin-bottom:5px;font-weight:600;font-size:.85rem}
+input,select{width:100%;padding:12px;border:1px solid #d1d9e6;border-radius:8px;font-size:16px}
+.btn{padding:12px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:bold;font-size:.85rem}
+.btn-primary{background:var(--primary);color:#fff}.btn-secondary{background:#e2e8f0}.btn-danger{background:#fee;color:#b00020}.btn-whatsapp{background:#25D366;color:#fff}
+table{width:100%;border-collapse:collapse;min-width:520px}th,td{padding:10px;text-align:left;border-bottom:1px solid #eef2f7;font-size:.85rem}
+.stock-empty{color:var(--danger);background:#ffe5e8;padding:3px 8px;border-radius:12px;font-weight:bold}.stock-low{color:#9a5700;background:#fff0d6;padding:3px 8px;border-radius:12px;font-weight:bold}
+.grid-2col{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.receipt{border:2px dashed #002366;padding:18px;background:#fffef5;border-radius:12px}
+.bottom-nav{display:none}
+#install-banner{display:none;background:#002366;color:#fff;padding:12px 16px;border-radius:12px;margin-bottom:16px;justify-content:space-between;align-items:center;gap:10px}
+@media(max-width:900px){
+body{flex-direction:column;padding-bottom:75px}.sidebar{display:none}.main-content{margin-left:0;width:100%;padding:12px}.form-grid,.grid-2col{grid-template-columns:1fr}.cards-grid{grid-template-columns:1fr 1fr}
+.bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;z-index:200;padding:6px 4px;justify-content:space-around}
+.bottom-nav button{border:none;background:none;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px;color:#666;padding:6px}
+.bottom-nav button.active{color:#002366;font-weight:bold}
+.bottom-nav span{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div class="sidebar">
+<div class="sidebar-brand"><div class="logo-circle">💼</div><div><h2>FITS MANAGER</h2><small>Fouta IT Services</small></div></div>
+<ul class="sidebar-menu">
+<li><a href="#" class="menu-link active" data-target="dashboard-section">📊 Tableau de bord</a></li>
+<li><a href="#" class="menu-link" data-target="products-section">📦 Produits</a></li>
+<li><a href="#" class="menu-link" data-target="sales-section">💰 Caisse & Ventes</a></li>
+<li><a href="#" class="menu-link" data-target="receipts-section">🧾 Reçus</a></li>
+<li><a href="#" class="menu-link" data-target="customers-section">👥 Clients</a></li>
+<li><a href="#" class="menu-link" data-target="suppliers-section">🏢 Fournisseurs</a></li>
+<li><a href="#" class="menu-link" data-target="supply-section">📥 Approvisionnement</a></li>
+<li><a href="#" class="menu-link" data-target="reports-section">📈 Rapports & Marges</a></li>
+<li><a href="#" class="menu-link" data-target="backup-section">💾 Sauvegarde</a></li>
+</ul>
+</div>
+<div class="main-content">
+<header><div class="header-left"><div><h1>Système de Gestion Commerciale</h1><p>FITS - Nouakchott, Mauritanie</p></div></div><span id="current-date-time" style="background:#2f80ed;color:#fff;padding:8px 14px;border-radius:20px;font-weight:bold;font-size:12px"></span></header>
+<div id="install-banner"><span>📱 <b>Installer FITS MANAGER</b> sur ton téléphone ? Marche hors-ligne.</span><button class="btn" id="btn-install" style="background:#fff;color:#002366">Installer</button></div>
+<main>
+<section id="dashboard-section" class="app-section active">
+<div class="cards-grid">
+<div id="card-total" class="card card-blue clickable"><h3>TOTAL PRODUITS</h3><p id="dash-total-products">0</p><small>👉 Voir tous</small></div>
+<div id="card-empty" class="card card-red clickable"><h3>RUPTURES</h3><p id="dash-alert-empty">0</p><small>👉 Voir ruptures</small></div>
+<div id="card-low" class="card card-orange clickable"><h3>STOCK FAIBLE (≤5)</h3><p id="dash-alert-low">0</p><small>👉 Voir faibles</small></div>
+<div id="card-ca" class="card card-green clickable"><h3>CHIFFRE D'AFFAIRES</h3><p id="dash-turnover">0 MRU</p><small>👉 Voir caisse</small></div>
+</div>
+<div class="cards-grid"><div class="card card-blue"><h3>NOMBRE DE VENTES</h3><p id="dash-total-sales">0</p></div><div class="card"><h3>MARGE</h3><p id="dash-margin">0 MRU</p></div></div>
+<div class="content-block" style="border:2px solid #ff9800">
+<h2>🤖 Prédiction IA - Tous les produits</h2>
+<p style="font-size:12px;color:#666">Basé sur tes ventes des 30 derniers jours. Bouton Commander = WhatsApp direct au bon fournisseur.</p>
+<div id="prediction-list" style="margin-top:10px"></div>
+</div>
+<div class="content-block"><h2>Dernières Ventes</h2><table><thead><tr><th>N° Reçu</th><th>Date</th><th>Client</th><th>Montant</th><th>Paiement</th></tr></thead><tbody id="dash-last-sales"></tbody></table></div>
+  </section>
+  <section id="products-section" class="app-section">
+<div class="content-block"><h2>➕ Produit</h2><form id="product-form"><div class="form-grid">
+<div class="form-group"><label>Réf *</label><input id="product-ref" required placeholder="Ex: CAM-01"></div>
+<div class="form-group"><label>Désignation *</label><input id="product-name" required placeholder="Ex: Caméra Hikvision"></div>
+<div class="form-group"><label>Catégorie</label><select id="product-category"><option>Vidéosurveillance</option><option>Réseau et Wi-Fi</option><option>Informatique</option><option>Accessoires</option><option>Énergie solaire</option><option>Alimentation</option><option>Autre</option></select></div>
+<div class="form-group"><label>Fournisseur du produit *</label><select id="product-supplier"></select></div>
+<div class="form-group"><label>Achat *</label><input type="number" id="product-price-buy" min="0" required></div>
+<div class="form-group"><label>Vente *</label><input type="number" id="product-price-sell" min="0" required></div>
+<div class="form-group"><label>Qté *</label><input type="number" id="product-qty" min="0" required></div>
+</div><button type="submit" class="btn btn-primary" id="btn-save-product" style="width:100%">Enregistrer</button> <button type="button" class="btn btn-secondary" id="btn-cancel-product" style="display:none">Annuler</button></form></div>
+<div class="content-block"><h2>📋 Stock</h2>
+<div id="stock-filter-banner" style="display:none;background:#fff7e0;border:1px solid #ff9800;padding:10px;border-radius:8px;margin-bottom:10px;font-weight:bold">Filtre actif : <span id="stock-filter-text"></span> <button class="btn btn-secondary" id="btn-clear-filter" style="padding:4px 10px">✖ Voir tout</button></div>
+<div style="display:flex;gap:10px;margin-bottom:10px"><input type="search" id="search-product" placeholder="Rechercher..."><select id="filter-product-cat"><option value="Tous">Toutes</option><option>Vidéosurveillance</option><option>Réseau et Wi-Fi</option><option>Informatique</option><option>Accessoires</option><option>Énergie solaire</option><option>Alimentation</option><option>Autre</option></select></div>
+<table><thead><tr><th>Ref</th><th>Désignation</th><th>Fournisseur</th><th>Vente</th><th>Stock</th><th>Prédiction</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="product-rows"></tbody></table></div>
+</section>
+
+<section id="sales-section" class="app-section"><div class="grid-2col"><div class="content-block"><h2>🛒 Caisse</h2>
+<div class="form-group"><label>Client</label><select id="sale-client-select"></select></div>
+<div class="form-group"><label>Produit</label><select id="sale-product-select"><option value="">-- Choisir --</option></select></div>
+<button type="button" class="btn btn-secondary" id="btn-add-to-cart" style="width:100%">➕ Ajouter au Panier</button>
+<h3 style="margin-top:15px">Panier</h3><table><thead><tr><th>Produit</th><th>PU</th><th>Qté</th><th>Total</th><th>X</th></tr></thead><tbody id="cart-rows"><tr><td colspan="5">Vide</td></tr></tbody></table>
+<h3>Total : <span id="cart-total">0 MRU</span></h3>
+<div class="form-group"><label>Paiement</label><select id="sale-payment"><option>Espèces</option><option>Bankily</option><option>Masrvi</option></select></div>
+<button class="btn btn-primary" id="btn-validate-sale" style="width:100%;font-size:18px;padding:16px">⚡ VALIDER VENTE</button></div>
+<div class="content-block"><h2>🧾 Reçu FITS Pro</h2><div class="receipt"><h2 style="text-align:center">FITS - FOUTA IT SERVICES</h2><p style="text-align:center">Nouakchott | Tel: 222 00 00 00</p><hr><p><b>N°:</b> <span id="r-num">-----</span><br><b>Date:</b> <span id="r-date"></span><br><b>Client:</b> <span id="r-client"></span><br><b>Paiement:</b> <span id="r-pay"></span></p><table><thead><tr><th>Produit</th><th>Qté</th><th>Total</th></tr></thead><tbody id="r-items"></tbody></table><p style="text-align:right;margin-top:10px"><b>Total: <span id="r-total">0 MRU</span></b></p><button class="btn btn-secondary" onclick="window.print()" style="width:100%">🖨️ Imprimer / PDF</button></div></div></div></section>
+
+<section id="receipts-section" class="app-section"><div class="content-block"><h2>🧾 Reçus</h2><table><thead><tr><th>N°</th><th>Date</th><th>Client</th><th>Montant</th></tr></thead><tbody id="all-receipts-rows"></tbody></table></div></section>
+<section id="customers-section" class="app-section"><div class="content-block"><h2>👥 Clients</h2><form id="customer-form" style="display:flex;gap:10px;flex-wrap:wrap"><input id="cust-name" placeholder="Nom *" required><input id="cust-phone" placeholder="Tél"><button class="btn btn-primary">Créer</button></form></div><div class="content-block"><table><thead><tr><th>Nom</th><th>Tél</th></tr></thead><tbody id="customer-rows"></tbody></table></div></section>
+<section id="suppliers-section" class="app-section"><div class="content-block"><h2>🏢 Fournisseurs</h2><form id="supplier-form" style="display:flex;gap:10px;flex-wrap:wrap"><input id="sup-name" placeholder="Nom *" required><input id="sup-phone" placeholder="Tél WhatsApp ex: 222 00 00 00"><button class="btn btn-primary">Créer</button></form><p style="font-size:12px;color:#666;margin-top:8px">⚠️ Mets le vrai numéro WhatsApp du fournisseur, c'est lui qui recevra la commande automatique.</p></div><div class="content-block"><table><thead><tr><th>Nom</th><th>Tél WhatsApp</th><th>Action</th></tr></thead><tbody id="supplier-rows"></tbody></table></div></section>
+<section id="supply-section" class="app-section"><div class="content-block"><h2>🚛 Entrée Stock</h2><form id="supply-form"><div class="form-grid"><div class="form-group"><label>Fournisseur</label><select id="supply-supplier"></select></div><div class="form-group"><label>Produit</label><select id="supply-product"></select></div><div class="form-group"><label>Qté +</label><input type="number" id="supply-qty" min="1" required></div></div><button class="btn btn-primary" style="width:100%">Ajouter au stock</button></form></div><div class="content-block"><table><thead><tr><th>Date</th><th>Produit</th><th>Qté</th></tr></thead><tbody id="supply-rows"></tbody></table></div></section>
+<section id="reports-section" class="app-section"><div class="cards-grid"><div class="card"><h3>Marge</h3><p id="rep-margin">0 MRU</p></div><div class="card"><h3>Jour</h3><p id="rep-day-sales">0 MRU</p></div><div class="card"><h3>Mois</h3><p id="rep-month-sales">0 MRU</p></div></div><div class="content-block"><h2>Top Ventes</h2><table><thead><tr><th>Produit</th><th>Qté</th></tr></thead><tbody id="rep-top-products-rows"></tbody></table></div></section>
+<section id="backup-section" class="app-section"><div class="content-block"><h2>💾 Sauvegarde</h2><p style="font-size:13px;margin-bottom:10px">Tes données sont déjà sauvegardées automatiquement dans le téléphone, même sans internet.</p><button class="btn btn-primary" id="btn-export-json">📥 Exporter JSON</button> <input type="file" id="import-file-json" accept=".json"><br><br><button class="btn btn-whatsapp" id="btn-share-whatsapp">📱 Envoyer sauvegarde par WhatsApp</button><br><br><button class="btn btn-danger" id="btn-clear-data">🗑️ Reset tout</button></div></section>
+</main>
+</div>
+<div class="bottom-nav">
+<button data-nav="dashboard-section" class="active"><span>📊</span>Accueil</button>
+<button data-nav="products-section"><span>📦</span>Stock</button>
+<button data-nav="sales-section"><span>💰</span>Caisse</button>
+<button data-nav="receipts-section"><span>🧾</span>Reçus</button>
+<button data-nav="backup-section"><span>💾</span>Plus</button>
+  </div>
+  <script>
+// === INSTALLATION PWA ===
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById("install-banner").style.display="flex";});
+document.addEventListener("DOMContentLoaded",()=>{
+  var b=document.getElementById("btn-install");
+  if(b) b.addEventListener("click",async()=>{ if(deferredPrompt){deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; document.getElementById("install-banner").style.display="none";} else { alert("Sur iPhone : bouton Partager > Ajouter à l'écran d'accueil.\nSur Android : Menu ⋮ > Installer l'application."); }});
+});
+// === SERVICE WORKER HORS-LIGNE ===
+if('serviceWorker' in navigator){
+  var swCode=`self.addEventListener('install',e=>{self.skipWaiting()});self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))})`;
+  var blob=new Blob([swCode],{type:'text/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+}
+
+var productStockFilter='all';
+var FITS_DATA={products:[],sales:[],customers:[],suppliers:[],supplies:[]};
+var LOW=5; var cart=[]; var editRef=null;
+function showSection(id){
+  document.querySelectorAll(".menu-link").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".app-section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".bottom-nav button").forEach(b=>b.classList.remove("active"));
+  var link=document.querySelector('[data-target="'+id+'"]'); if(link) link.classList.add("active");
+  var nav=document.querySelector(`[data-nav="${id}"]`); if(nav) nav.classList.add("active");
+  var sec=document.getElementById(id); if(sec) sec.classList.add("active"); window.scrollTo(0,0);
+}
+function openCard(type){
+  var banner=document.getElementById("stock-filter-banner"); var txt=document.getElementById("stock-filter-text");
+  if(type==='all'){productStockFilter='all'; banner.style.display="none"; showSection('products-section');}
+  if(type==='empty'){productStockFilter='empty'; txt.textContent="Ruptures uniquement"; banner.style.display="block"; showSection('products-section');}
+  if(type==='low'){productStockFilter='low'; txt.textContent="Stock faible (≤5)"; banner.style.display="block"; showSection('products-section');}
+  if(type==='sales'){showSection('sales-section');} if(type==='receipts'){showSection('receipts-section');} if(type==='reports'){showSection('reports-section');}
+  renderProd();
+}
+function clearStockFilter(){ productStockFilter='all'; document.getElementById("stock-filter-banner").style.display="none"; document.getElementById("search-product").value=""; renderProd(); }
+function calculPrediction(p){
+  var now=new Date(); var ilYa30=new Date(); ilYa30.setDate(now.getDate()-30); var ventes30=0;
+  FITS_DATA.sales.forEach(function(s){ var d=new Date(s.date); if(d>=ilYa30){ (s.items||[]).forEach(function(l){ if(l.name===p.name || l.ref===p.ref) ventes30+=Number(l.qty||1); }); } });
+  var parJour=ventes30/30; if(parJour===0) return {texte:"— Pas de vente", jours:999, ventes30:0, parJour:0};
+  var jours=Math.floor(p.qty/parJour); var texte="";
+  if(jours<=3) texte=`⚠️ ${jours} j restants`; else if(jours<=7) texte=`🟡 ${jours} j restants`; else texte=`✅ ${jours} j restants`;
+  return {texte, jours, ventes30, parJour};
+}
+function commanderWhatsApp(refProduit, qtyConseillee){
+  var produit=FITS_DATA.products.find(p=>p.ref===refProduit); if(!produit) return alert("Produit introuvable");
+  var fournisseur=FITS_DATA.suppliers.find(s=>s.name===produit.supplier); if(!fournisseur) fournisseur=FITS_DATA.suppliers[0];
+  if(!fournisseur) return alert("Ajoute d'abord un fournisseur !");
+  var tel=(fournisseur.phone||"").replace(/[^0-9]/g,""); if(tel.length===8) tel="222"+tel; if(tel.length<10) return alert("Numéro invalide : "+fournisseur.phone);
+  var message=encodeURIComponent(`Bonjour ${fournisseur.name}, c'est FITS MANAGER - Boutique FITS.\n\nJe veux commander :\n- ${qtyConseillee} x ${produit.name} (Ref: ${produit.ref})\n\nMerci de me confirmer le prix et la livraison.`);
+  window.open(`https://wa.me/${tel}?text=${message}`,"_blank");
+}
+function getPredictionForAll(){
+  var container=document.getElementById("prediction-list"); if(!container) return; var html=""; var hasAlert=false;
+  FITS_DATA.products.forEach(function(p){
+    var pred=calculPrediction(p);
+    if(pred.jours<=7 && pred.parJour>0){ hasAlert=true; var qtyConseillee=Math.ceil(pred.parJour*30); var bg=pred.jours<=3?"#ffe5e8":"#fff0d6"; var label=pred.jours<=3?"⚠️ URGENT":"🟡 ATTENTION";
+      html+=`<div style="background:${bg};padding:12px;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><b>${label} : ${p.name}</b> va finir dans <b>${pred.jours} jours</b> ! Stock : ${p.qty} - Vente : ${pred.parJour.toFixed(1)}/jour<br><small>Fournisseur : ${p.supplier||"-"} | Commande conseillée : ${qtyConseillee}</small></div><button class="btn btn-whatsapp" onclick="commanderWhatsApp('${p.ref}', ${qtyConseillee})">📱 Commander</button></div>`; }
+  });
+  if(!hasAlert) html=`<div style="background:#e8f5e9;padding:10px;border-radius:8px">✅ Aucun risque de rupture cette semaine. Tous tes produits sont OK.</div>`;
+  container.innerHTML=html;
+}
+document.addEventListener("DOMContentLoaded", function(){
+  var demoSuppliers=[{id:"s1",name:"FITS Distribution",phone:"2220000000"},{id:"s2",name:"Fournisseur Caméras",phone:"2221111111"},{id:"s3",name:"Fournisseur Réseau",phone:"2222222222"}];
+  var demo=[{ref:"CAM-HIK-01",name:"Caméra Hikvision",cat:"Vidéosurveillance",supplier:"Fournisseur Caméras",buy:900,sell:1500,qty:8},{ref:"ROUT-TP-01",name:"Routeur TP-Link",cat:"Réseau et Wi-Fi",supplier:"Fournisseur Réseau",buy:1800,sell:2500,qty:3},{ref:"CABL-UTP-01",name:"Câble Cat6",cat:"Accessoires",supplier:"FITS Distribution",buy:1200,sell:1800,qty:12},{ref:"SW-CIS-01",name:"Switch Cisco",cat:"Réseau et Wi-Fi",supplier:"Fournisseur Réseau",buy:3500,sell:4800,qty:4},{ref:"USB-KST-64",name:"Clé USB 64Go",cat:"Accessoires",supplier:"FITS Distribution",buy:400,sell:650,qty:0},{ref:"PC-HP-14",name:"PC HP ProBook",cat:"Informatique",supplier:"FITS Distribution",buy:25000,sell:32000,qty:2},{ref:"SOL-PAN-100",name:"Panneau Solaire",cat:"Énergie solaire",supplier:"FITS Distribution",buy:5000,sell:7500,qty:6}];
+  function load(){ var s=localStorage.getItem("FITS_MANAGER_STORE"); if(s){ try{FITS_DATA=JSON.parse(s);}catch(e){} FITS_DATA.products.forEach(p=>{ if(!p.supplier) p.supplier=FITS_DATA.suppliers[0]?.name||"FITS Distribution"; }); } else { FITS_DATA.products=demo.slice(); FITS_DATA.customers=[{id:"c1",name:"Client Comptant",phone:"2220000000"}]; FITS_DATA.suppliers=demoSuppliers.slice(); save(); } }
+  function save(){ localStorage.setItem("FITS_MANAGER_STORE",JSON.stringify(FITS_DATA)); updateDash(); renderAll(); populate(); }
+  document.querySelectorAll(".menu-link").forEach(l=>l.addEventListener("click",e=>{e.preventDefault(); showSection(l.dataset.target);}));
+  document.querySelectorAll(".bottom-nav button").forEach(b=>b.addEventListener("click",()=>showSection(b.dataset.nav)));
+  document.getElementById("card-total").addEventListener("click",()=>openCard('all')); document.getElementById("card-empty").addEventListener("click",()=>openCard('empty')); document.getElementById("card-low").addEventListener("click",()=>openCard('low')); document.getElementById("card-ca").addEventListener("click",()=>openCard('sales'));
+  document.getElementById("btn-clear-filter").addEventListener("click",clearStockFilter);
+  function updateDate(){ var el=document.getElementById("current-date-time"); if(el) el.textContent=new Date().toLocaleString("fr-FR",{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); } setInterval(updateDate,60000); updateDate();
+  function updateDash(){
+    document.getElementById("dash-total-products").textContent=FITS_DATA.products.length;
+    document.getElementById("dash-alert-empty").textContent=FITS_DATA.products.filter(p=>p.qty===0).length;
+    document.getElementById("dash-alert-low").textContent=FITS_DATA.products.filter(p=>p.qty>0&&p.qty<=LOW).length;
+    document.getElementById("dash-turnover").textContent=FITS_DATA.sales.reduce((a,b)=>a+b.totalPayable,0).toLocaleString()+" MRU";
+    document.getElementById("dash-total-sales").textContent=FITS_DATA.sales.length;
+    document.getElementById("dash-margin").textContent=FITS_DATA.sales.reduce((a,b)=>a+b.marge,0).toLocaleString()+" MRU";
+    var last=document.getElementById("dash-last-sales"); if(FITS_DATA.sales.length===0) last.innerHTML='<tr><td colspan="5">Aucune vente</td></tr>'; else { last.innerHTML=""; FITS_DATA.sales.slice(-5).reverse().forEach(s=>{ last.innerHTML+=`<tr><td>${s.numero}</td><td>${new Date(s.date).toLocaleDateString()}</td><td>${s.clientName}</td><td>${s.totalPayable} MRU</td><td>${s.paiement}</td></tr>`; }); }
+    var today=new Date().toDateString(); var day=FITS_DATA.sales.filter(s=>new Date(s.date).toDateString()===today).reduce((a,b)=>a+b.totalPayable,0); var now=new Date(); var month=FITS_DATA.sales.filter(s=>{var d=new Date(s.date); return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}).reduce((a,b)=>a+b.totalPayable,0);
+    document.getElementById("rep-margin").textContent=FITS_DATA.sales.reduce((a,b)=>a+b.marge,0).toLocaleString()+" MRU"; document.getElementById("rep-day-sales").textContent=day.toLocaleString()+" MRU"; document.getElementById("rep-month-sales").textContent=month.toLocaleString()+" MRU";
+    getPredictionForAll();
+    var counts={}; FITS_DATA.sales.forEach(s=>s.items.forEach(it=>{counts[it.name]=(counts[it.name]||0)+it.qty;})); var top=document.getElementById("rep-top-products-rows"); top.innerHTML=""; Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5).forEach(([n,q])=>{top.innerHTML+=`<tr><td>${n}</td><td>${q}</td></tr>`;}); if(Object.keys(counts).length===0) top.innerHTML='<tr><td colspan="2">Aucune vente</td></tr>';
+  }
+  function renderProd(){
+    var tbody=document.getElementById("product-rows"); var search=(document.getElementById("search-product").value||"").toLowerCase(); var cat=document.getElementById("filter-product-cat").value; tbody.innerHTML="";
+    FITS_DATA.products.filter(p=>{ if(productStockFilter==='empty' && p.qty!==0) return false; if(productStockFilter==='low' && !(p.qty>0&&p.qty<=LOW)) return false; if(cat!=="Tous" && p.cat!==cat) return false; if(search && !p.name.toLowerCase().includes(search) && !p.ref.toLowerCase().includes(search)) return false; return true; }).forEach(p=>{
+      var pred=calculPrediction(p); var statut=p.qty===0?'<span class="stock-empty">RUPTURE</span>':p.qty<=LOW?'<span class="stock-low">FAIBLE</span>':'OK';
+      tbody.innerHTML+=`<tr><td>${p.ref}</td><td>${p.name}</td><td>${p.supplier||"-"}</td><td>${p.sell} MRU</td><td>${p.qty}</td><td style="font-size:12px;font-weight:bold">${pred.texte}</td><td>${statut}</td><td><button class="btn btn-secondary" onclick="editProduct('${p.ref}')">✏️</button> <button class="btn btn-danger" onclick="deleteProduct('${p.ref}')">🗑️</button></td></tr>`;
+    });
+  }
+  window.renderProd=renderProd;
+  window.editProduct=function(ref){ var p=FITS_DATA.products.find(x=>x.ref===ref); if(!p) return; editRef=ref; document.getElementById("product-ref").value=p.ref; document.getElementById("product-name").value=p.name; document.getElementById("product-category").value=p.cat; document.getElementById("product-supplier").value=p.supplier||""; document.getElementById("product-price-buy").value=p.buy; document.getElementById("product-price-sell").value=p.sell; document.getElementById("product-qty").value=p.qty; document.getElementById("btn-cancel-product").style.display="inline-block"; document.getElementById("btn-save-product").textContent="Modifier"; showSection('products-section'); };
+  window.deleteProduct=function(ref){ if(confirm("Supprimer "+ref+" ?")){ FITS_DATA.products=FITS_DATA.products.filter(p=>p.ref!==ref); save(); } };
+  document.getElementById("product-form").addEventListener("submit",e=>{ e.preventDefault(); var ref=document.getElementById("product-ref").value.trim().toUpperCase(); var name=document.getElementById("product-name").value.trim(); var cat=document.getElementById("product-category").value; var supplier=document.getElementById("product-supplier").value; var buy=Number(document.getElementById("product-price-buy").value); var sell=Number(document.getElementById("product-price-sell").value); var qty=Number(document.getElementById("product-qty").value); if(FITS_DATA.products.find(p=>p.ref===ref && p.ref!==editRef)) return alert("Ref existe déjà"); if(editRef){ var p=FITS_DATA.products.find(x=>x.ref===editRef); p.ref=ref; p.name=name; p.cat=cat; p.supplier=supplier; p.buy=buy; p.sell=sell; p.qty=qty; editRef=null; document.getElementById("btn-cancel-product").style.display="none"; document.getElementById("btn-save-product").textContent="Enregistrer"; } else FITS_DATA.products.push({ref,name,cat,supplier,buy,sell,qty}); e.target.reset(); save(); });
+  document.getElementById("btn-cancel-product").addEventListener("click",()=>{editRef=null; document.getElementById("product-form").reset(); document.getElementById("btn-cancel-product").style.display="none"; document.getElementById("btn-save-product").textContent="Enregistrer";});
+  document.getElementById("search-product").addEventListener("input",renderProd); document.getElementById("filter-product-cat").addEventListener("change",renderProd);
+  function renderAll(){
+    renderProd();
+    var cr=document.getElementById("all-receipts-rows"); cr.innerHTML=""; FITS_DATA.sales.slice().reverse().forEach(s=>{cr.innerHTML+=`<tr><td>${s.numero}</td><td>${new Date(s.date).toLocaleDateString()}</td><td>${s.clientName}</td><td>${s.totalPayable} MRU</td></tr>`;});
+    var cust=document.getElementById("customer-rows"); cust.innerHTML=""; FITS_DATA.customers.forEach(c=>{cust.innerHTML+=`<tr><td>${c.name}</td><td>${c.phone||""}</td></tr>`;});
+    var sup=document.getElementById("supplier-rows"); sup.innerHTML=""; FITS_DATA.suppliers.forEach(s=>{sup.innerHTML+=`<tr><td>${s.name}</td><td>${s.phone||""}</td><td><button class="btn btn-danger" onclick="deleteSupplier('${s.id}')">🗑️</button></td></tr>`;});
+    var supRows=document.getElementById("supply-rows"); supRows.innerHTML=""; FITS_DATA.supplies.slice().reverse().forEach(s=>{supRows.innerHTML+=`<tr><td>${new Date(s.date).toLocaleDateString()}</td><td>${s.productName}</td><td>+${s.qty}</td></tr>`;});
+  }
+  window.deleteSupplier=function(id){ if(confirm("Supprimer ce fournisseur ?")){ FITS_DATA.suppliers=FITS_DATA.suppliers.filter(s=>s.id!==id); save(); } };
+  function populate(){
+    var cs=document.getElementById("sale-client-select"); cs.innerHTML=""; FITS_DATA.customers.forEach(c=>{cs.innerHTML+=`<option value="${c.name}">${c.name}</option>`;});
+    var ps=document.getElementById("sale-product-select"); ps.innerHTML='<option value="">-- Choisir --</option>'; FITS_DATA.products.forEach(p=>{ps.innerHTML+=`<option value="${p.ref}">${p.name} - ${p.sell} MRU (Stock: ${p.qty})</option>`;});
+    var ss=document.getElementById("supply-supplier"); ss.innerHTML=""; FITS_DATA.suppliers.forEach(s=>{ss.innerHTML+=`<option value="${s.name}">${s.name}</option>`;});
+    var sp=document.getElementById("supply-product"); sp.innerHTML=""; FITS_DATA.products.forEach(p=>{sp.innerHTML+=`<option value="${p.ref}">${p.name}</option>`;});
+    var prodSup=document.getElementById("product-supplier"); if(prodSup){ var current=prodSup.value; prodSup.innerHTML=""; FITS_DATA.suppliers.forEach(s=>{prodSup.innerHTML+=`<option value="${s.name}">${s.name}</option>`;}); if(current) prodSup.value=current; }
+  }
+  function renderCart(){
+    var tbody=document.getElementById("cart-rows"); var total=0;
+    if(cart.length===0) tbody.innerHTML='<tr><td colspan="5">Vide</td></tr>'; else { tbody.innerHTML=""; cart.forEach((it,i)=>{ var t=it.price*it.qty; total+=t; tbody.innerHTML+=`<tr><td>${it.name}</td><td>${it.price}</td><td>${it.qty}</td><td>${t}</td><td><button onclick="removeCart(${i})">X</button></td></tr>`; }); }
+    document.getElementById("cart-total").textContent=total+" MRU";
+  }
+  window.removeCart=function(i){ cart.splice(i,1); renderCart(); };
+  document.getElementById("btn-add-to-cart").addEventListener("click",()=>{ var ref=document.getElementById("sale-product-select").value; if(!ref) return alert("Choisis un produit"); var p=FITS_DATA.products.find(x=>x.ref===ref); if(!p) return; var exist=cart.find(x=>x.ref===ref); if(exist){ if(exist.qty>=p.qty) return alert("Stock insuffisant"); exist.qty++; } else { if(p.qty<1) return alert("Rupture"); cart.push({ref:p.ref,name:p.name,price:p.sell,qty:1,buy:p.buy}); } renderCart(); });
+  document.getElementById("btn-validate-sale").addEventListener("click",()=>{ if(cart.length===0) return alert("Panier vide"); var client=document.getElementById("sale-client-select").value||"Client Comptant"; var paiement=document.getElementById("sale-payment").value; var total=cart.reduce((a,b)=>a+b.price*b.qty,0); var marge=cart.reduce((a,b)=>a+(b.price-b.buy)*b.qty,0); var numero="FITS-"+String(FITS_DATA.sales.length+1).padStart(4,"0"); var sale={numero, date:new Date().toISOString(), clientName:client, paiement, totalPayable:total, marge, items:JSON.parse(JSON.stringify(cart))}; FITS_DATA.sales.push(sale); cart.forEach(it=>{ var p=FITS_DATA.products.find(x=>x.ref===it.ref); if(p) p.qty-=it.qty; }); document.getElementById("r-num").textContent=numero; document.getElementById("r-date").textContent=new Date().toLocaleString("fr-FR"); document.getElementById("r-client").textContent=client; document.getElementById("r-pay").textContent=paiement; var ri=document.getElementById("r-items"); ri.innerHTML=""; cart.forEach(it=>{ri.innerHTML+=`<tr><td>${it.name}</td><td>${it.qty}</td><td>${it.price*it.qty} MRU</td></tr>`;}); document.getElementById("r-total").textContent=total+" MRU"; cart=[]; renderCart(); save(); alert("Vente validée : "+numero); });
+  document.getElementById("customer-form").addEventListener("submit",e=>{e.preventDefault(); var n=document.getElementById("cust-name").value.trim(); var ph=document.getElementById("cust-phone").value.trim(); if(!n) return; FITS_DATA.customers.push({id:"c"+Date.now(),name:n,phone:ph}); e.target.reset(); save();});
+  document.getElementById("supplier-form").addEventListener("submit",e=>{e.preventDefault(); var n=document.getElementById("sup-name").value.trim(); var ph=document.getElementById("sup-phone").value.trim(); if(!n) return; FITS_DATA.suppliers.push({id:"s"+Date.now(),name:n,phone:ph}); e.target.reset(); save();});
+  document.getElementById("supply-form").addEventListener("submit",e=>{e.preventDefault(); var ref=document.getElementById("supply-product").value; var q=Number(document.getElementById("supply-qty").value); var p=FITS_DATA.products.find(x=>x.ref===ref); if(!p) return; p.qty+=q; FITS_DATA.supplies.push({date:new Date().toISOString(), productName:p.name, qty:q}); e.target.reset(); save();});
+  document.getElementById("btn-export-json").addEventListener("click",()=>{ var blob=new Blob([JSON.stringify(FITS_DATA,null,2)],{type:"application/json"}); var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="fits-backup.json"; a.click(); });
+  document.getElementById("btn-share-whatsapp").addEventListener("click",()=>{ var txt=encodeURIComponent("Sauvegarde FITS MANAGER :\nProduits: "+FITS_DATA.products.length+" | Ventes: "+FITS_DATA.sales.length+" | CA: "+FITS_DATA.sales.reduce((a,b)=>a+b.totalPayable,0)+" MRU"); window.open("https://wa.me/?text="+txt,"_blank"); });
+  document.getElementById("import-file-json").addEventListener("change",e=>{ var f=e.target.files[0]; if(!f) return; var r=new FileReader(); r.onload=()=>{ try{FITS_DATA=JSON.parse(r.result); save(); alert("Importé");}catch(err){alert("Fichier invalide");} }; r.readAsText(f); });
+  document.getElementById(
